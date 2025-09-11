@@ -70,28 +70,22 @@ values ('matemática'),
 ('artes'),
 ('portugues');
 
-insert into questoes (perguntas)
-values ('Banana?'),
-('Abacate?'),
-('tangerina?'),
-('?-?'),
-('é foda?');
+insert into questoes (perguntas, idQuestionario)
+values ('1?', 1),
+('Revolução?',2),
+('BRICS?',3),
+('Raphael?',4),
+('Comunicação?',5);
 
-insert into alternativas (testo, correta)
-values ('leão',0),
-('cachorro',1),
-('tigre',1),
-('doninha',0);
+insert into alternativas (testo, correta, idQuestoes)
+values ('França',0,2),
+('vezes',1,1),
+('quadros',1,4),
+('Brazi',0,3),
+('fonética',1,5);
 
 select
 u.pontuacao,
 u.usuario
 from usuario u
 join resultado r on r.pontuacao = u.pontuacao;
-
-
-
-
-
-
-
