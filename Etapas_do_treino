@@ -1,0 +1,106 @@
+ **Projeto: Sistema de Questionários e Ranking**
+
+ **Etapa 1 – Criar o banco e tabelas básicas**
+
+1. Criar tabela `usuarios`
+
+   * `idUsuario` (PK, auto\_increment)
+   * `nome` (VARCHAR)
+   * `pontuacao` (INT, default 0)
+
+2. Criar tabela `questionario`
+
+   * `idQuestionario` (PK, auto\_increment)
+   * `nome` (VARCHAR)
+
+3. Criar tabela `questoes`
+
+   * `idQuestao` (PK, auto\_increment)
+   * `idQuestionario` (FK)
+   * `pergunta` (TEXT)
+
+4. Criar tabela `alternativas`
+
+   * `idAlternativa` (PK, auto\_increment)
+   * `idQuestao` (FK)
+   * `texto` (VARCHAR)
+   * `correta` (TINYINT)
+
+5. Criar tabela `respostas_usuario`
+
+   * `idResposta` (PK, auto\_increment)
+   * `idUsuario` (FK)
+   * `idQuestao` (FK)
+   * `idAlternativa` (FK)
+   * `correta` (TINYINT)
+   * `idResultado` (FK)
+
+6. Criar tabela `resultado`
+
+   * `idResultado` (PK, auto\_increment)
+   * `idUsuario` (FK)
+   * `idQuestionario` (FK)
+   * `pontuacao` (INT)
+   * `tempoSegundos` (INT)
+   * `dataExecucao` (DATETIME)
+
+---
+
+### **Etapa 2 – Inserir dados de teste**
+
+* Inserir alguns usuários (5–10).
+* Inserir alguns questionários (2–3).
+* Inserir algumas questões e alternativas.
+* Simular respostas de usuários com acertos e erros.
+
+---
+
+### **Etapa 3 – Queries simples**
+
+1. Consultar **pontuação total de um usuário**
+2. Consultar **respostas corretas de um questionário**
+3. Listar **todos os usuários que participaram de um questionário específico**
+
+---
+
+### **Etapa 4 – Ranking básico**
+
+* Criar **views** para ranking usando `RANK()`, `DENSE_RANK()` ou `ROW_NUMBER()`
+* Ranking global (todos os questionários)
+* Ranking por questionário específico
+* Ranking com critério de desempate (ex: menor tempo)
+
+---
+
+### **Etapa 5 – Criar procedures simples**
+
+1. Procedure para **inserir resultados** e calcular pontuação de um usuário.
+2. Procedure para **consultar histórico de resultados** de um usuário (`HistoricoResultadosUsuario`).
+3. Procedure para **atualizar ranking** (com base na pontuação e desempate).
+
+---
+
+### **Etapa 6 – Procedures intermediárias**
+
+1. Procedure que recebe `idQuestionario` e retorna **top 5 usuários**
+2. Procedure que recebe `idUsuario` e retorna **histórico completo de resultados**, pontuação e posição.
+3. Procedure para **atualizar pontuação de um usuário** quando ele completa uma nova execução de questionário.
+
+---
+
+### **Etapa 7 – Procedures avançadas**
+
+1. Procedure que gera **ranking completo com critérios múltiplos de desempate**:
+
+   * Pontuação
+   * Tempo
+   * Data de execução
+2. Procedure que calcula **média de pontuação por questionário** e **posição relativa** do usuário.
+3. Procedure que mantém **tabela de ranking persistente**, atualizando posições automaticamente a cada novo resultado.
+
+---
+
+### **Etapa 8 – Extra**
+
+* Criar triggers para atualizar ranking automaticamente quando uma nova resposta ou resultado é inserido.
+* Criar **procedures combinadas** que atualizam ranking e histórico ao mesmo tempo.
