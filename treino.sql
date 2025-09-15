@@ -573,3 +573,27 @@ group by u.nome;
 
 select u.idUsuario, q.idQuestionario from usuario u 
 inner join resultado q on u.idUsuario = q.idUsuario;
+
+create or replace view ranking as 
+select
+u.idUsuario,
+sum(r.pontuacao) as pontuacao_total,
+rank() over( order by sum(r.pontuacao) desc) as posicao
+from usuario u 
+join resultado r on r.idUsuario = u.idUsuario
+group by u.idUsuario;
+
+select * from ranking order by posicao;
+
+create or replace view ranking_questionario as 
+select
+u.idUsuario,
+r.pontuacao,
+r.idQuestionario,
+rank() over(partition by r.idQuestionario order by r.pontuacao desc) as posicao
+from usuario u 
+join resultado r on r.idUsuario = u.idUsuario;
+
+select * from ranking_questionario
+where idQuestionario = 1
+order by posicao;
