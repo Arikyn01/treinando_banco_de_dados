@@ -555,12 +555,17 @@ INSERT INTO respostas (idUsuario, idQuestoes, idAlternativas, correta, idResulta
 (12,9,  34,0,12),
 (12,10, 39,0,12);
 
+update usuario
+set pontuacao_total = pontuacao_total + (select sum(pontuacao) from resultado); -- verificar
+
 select 
-u.idUsuario, 
-sum(r.pontuacao) as pontuacao_total
+u.idUsuario, pontuacao_total
 from usuario u
-join resultado r on r.idUsuario = u.idUsuario
-group by u.idUsuario;
+join resultado r on r.idUsuario = u.idUsuario group by u.idUsuario; -- verificar
+
+
+
+
 
 select 
 u.nome,
@@ -577,8 +582,9 @@ inner join resultado q on u.idUsuario = q.idUsuario;
 create or replace view ranking as 
 select
 u.idUsuario,
+sum(r.tempo) as 'Tempo total',
 sum(r.pontuacao) as pontuacao_total,
-rank() over( order by sum(r.pontuacao) desc) as posicao
+rank() over( order by sum(r.pontuacao) desc, sum(tempo) asc) as posicao
 from usuario u 
 join resultado r on r.idUsuario = u.idUsuario
 group by u.idUsuario;
@@ -590,10 +596,59 @@ select
 u.idUsuario,
 r.pontuacao,
 r.idQuestionario,
-rank() over(partition by r.idQuestionario order by r.pontuacao desc) as posicao
+r.tempo,
+rank() over(partition by r.idQuestionario order by r.pontuacao desc, tempo asc) as posicao
 from usuario u 
 join resultado r on r.idUsuario = u.idUsuario;
+drop procedure if exists in_resultados
 
-select * from ranking_questionario
-where idQuestionario = 1
-order by posicao;
+delimiter $$
+create procedure in_resultados (p int, idu int)
+begin
+update resultado
+set pontuacao = pontuacao + (p * ( select 
+								  count(rs.correta) 
+								  from respostas rs 
+                                  where rs.correta = 1 
+                                  and rs.idUsuario = idu))
+where idUsuario = idu;
+ 
+
+end $$
+delimiter ;
+
+
+drop procedure if exists Historicos;
+
+delimiter $$
+create procedure Historicos (id int)
+begin
+select
+r.idUsuario,
+r.idQuestionario,
+r.pontuacao,
+r.tempo,
+r.dataexecucao
+from resultado r
+where r.idUsuario = id
+order by dataexecucao;
+end $$
+delimiter ;
+
+call Historicos (2);
+
+drop procedure if exists top;
+delimiter $$
+create procedure top ()
+begin
+select
+q.idUsuario,
+sum(pontuacao) as pontuacao_total,
+q.idQuestionario,
+Rank() over(order by sum(pontuacao) desc) as 'Top 5'
+from resultado q
+join usuario u on u.idUsuario = q.idUsuario
+order by pontuacao_total desc
+limit 5;
+end$$
+ delimiter ;
