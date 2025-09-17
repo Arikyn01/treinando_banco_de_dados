@@ -76,7 +76,6 @@
 
 1. Procedure para **inserir resultados** e calcular pontuação de um usuário.
 2. Procedure para **consultar histórico de resultados** de um usuário (`HistoricoResultadosUsuario`).
-3. Procedure para **atualizar ranking** (com base na pontuação e desempate).
 
 ---
 
