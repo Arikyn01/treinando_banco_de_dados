@@ -89,12 +89,6 @@
 
 ### **Etapa 7 – Procedures avançadas**
 
-1. Procedure que gera **ranking completo com critérios múltiplos de desempate**:
-
-   * Pontuação
-   * Tempo
-   * Data de execução
-2. Procedure que calcula **média de pontuação por questionário** e **posição relativa** do usuário.
 3. Procedure que mantém **tabela de ranking persistente**, atualizando posições automaticamente a cada novo resultado.
 
 ---
