@@ -58,17 +58,10 @@ constraint fk_respostas_idUsuario foreign key (idUsuario) references usuario (id
 constraint fk_respostas_idResultado foreign key (idResultado) references resultado (idResultado) 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-update usuario
-set pontuacao_total = pontuacao_total + (select sum(pontuacao) from resultado); -- verificar
-
 select 
-u.idUsuario, pontuacao_total
+u.idUsuario, sum(r.pontuacao) as pontuacao_total
 from usuario u
 join resultado r on r.idUsuario = u.idUsuario group by u.idUsuario; -- verificar
-
-
-
-
 
 select 
 u.nome,
@@ -127,18 +120,19 @@ delimiter $$
 create procedure Historicos (id int)
 begin
 select
+rk.posicao,
 r.idUsuario,
 r.idQuestionario,
 r.pontuacao,
 r.tempo,
 r.dataexecucao
 from resultado r
-where r.idUsuario = id
-order by dataexecucao;
+join ranking rk on rk.idUsuario = r.idUsuario
+order by rk.posicao;
 end $$
 delimiter ;
 
-call Historicos (2);
+
 
 drop procedure if exists top;
 delimiter $$
@@ -155,3 +149,5 @@ order by pontuacao_total desc
 limit 5;
 end$$
  delimiter ;
+ 
+call Historicos (2);
